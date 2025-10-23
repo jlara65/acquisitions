@@ -1,0 +1,15 @@
+# Ignore files and folders that shouldn't be copied into the container
+node_modules
+npm-debug.log
+Dockerfile*
+.dockerignore
+.git
+.gitignore
+.env*
+.env
+.vscode
+coverage
+.DS_Store
+*.swp
+*.swo
+npm-cache
