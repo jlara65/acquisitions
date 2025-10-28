@@ -65,7 +65,11 @@ export const signin = async (req, res, next) => {
     const { email, password } = validationResult.data;
     const user = await authenticateUser({ email, password });
 
-    const token = jwttoken.sign({ id: user.id, email: user.email, role: user.role });
+    const token = jwttoken.sign({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
     cookies.set(res, 'token', token);
 
     logger.info(`User signed in successfully: ${email}`);

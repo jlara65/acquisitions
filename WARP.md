@@ -1,15 +1,17 @@
 # Acquisitions - Project Overview
 
 ## 📋 Project Description
+
 A Node.js/Express application with Neon Database integration, featuring authentication, user management, and security middleware. The application is fully dockerized with separate configurations for development (using Neon Local) and production (using Neon Cloud).
 
 ## 🏗️ Tech Stack
+
 - **Runtime**: Node.js 22 (Alpine)
 - **Framework**: Express 5.1.0
 - **Database**: Neon PostgreSQL (via @neondatabase/serverless)
 - **ORM**: Drizzle ORM 0.44.6
 - **Authentication**: JWT (jsonwebtoken) + bcrypt
-- **Security**: 
+- **Security**:
   - Arcjet (@arcjet/node)
   - Helmet
   - CORS
@@ -18,6 +20,7 @@ A Node.js/Express application with Neon Database integration, featuring authenti
 - **Containerization**: Docker + Docker Compose
 
 ## 📁 Project Structure
+
 ```
 acquisitions/
 ├── src/
@@ -45,20 +48,24 @@ acquisitions/
 ## 🚀 Available Scripts
 
 ### Development
+
 - `npm run dev` - Start dev server with hot reload (node --watch)
 - `npm run dev:docker` - Run dev environment via Docker Compose (./scripts/dev.sh)
 
 ### Production
+
 - `npm start` - Start production server
 - `npm run prod:docker` - Run production environment via Docker (./scripts/prod.sh)
 
 ### Code Quality
+
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix ESLint issues automatically
 - `npm run format` - Format code with Prettier
 - `npm run format:check` - Check code formatting
 
 ### Database
+
 - `npm run db:generate` - Generate Drizzle migrations
 - `npm run db:migrate` - Run database migrations
 - `npm run db:studio` - Open Drizzle Studio
@@ -66,6 +73,7 @@ acquisitions/
 ## 🐳 Docker Setup
 
 ### Development Environment
+
 Uses Neon Local for ephemeral database branches:
 
 ```bash
@@ -82,11 +90,13 @@ docker compose -f docker-compose.dev.yml run --rm app npm run db:migrate
 ```
 
 **Services**:
+
 - App: http://localhost:3000
 - Health: http://localhost:3000/health
 - Neon Local Postgres: localhost:5432
 
 ### Production Environment
+
 Connects to Neon Cloud database:
 
 ```bash
@@ -103,6 +113,7 @@ docker compose -f docker-compose.prod.yml run --rm app npm run db:migrate
 ## 🔒 Environment Variables
 
 ### Development (.env.development)
+
 - `DATABASE_URL` - Points to Neon Local: `postgres://local:local@neon-local:5432/neondb`
 - `NEON_API_KEY` - Neon API key (injected from host)
 - `NEON_PROJECT_ID` - Neon project ID
@@ -110,11 +121,13 @@ docker compose -f docker-compose.prod.yml run --rm app npm run db:migrate
 - `PORT` - Application port (default: 3000)
 
 ### Production (.env.production)
+
 - `DATABASE_URL` - Neon Cloud connection string with SSL
 - `PORT` - Application port
 - Additional production-specific configs
 
 ## 🔑 Key Features
+
 1. **Multi-stage Docker builds** - Optimized for both dev and prod
 2. **Ephemeral database branches** - Development uses Neon Local for isolated testing
 3. **Hot reload** - Development environment supports live code updates
@@ -127,11 +140,13 @@ docker compose -f docker-compose.prod.yml run --rm app npm run db:migrate
 ## 🌐 API Endpoints
 
 ### Authentication
+
 - Defined in `src/routes/auth.routes.js`
 - Handlers in `src/controllers/auth.controller.js`
 - Services in `src/services/auth.service.js`
 
 ### Users
+
 - Defined in `src/routes/users.routes.js`
 - Handlers in `src/controllers/users.controller.js`
 - Services in `src/services/users.services.js`
@@ -139,12 +154,14 @@ docker compose -f docker-compose.prod.yml run --rm app npm run db:migrate
 ## 🛠️ Development Workflow
 
 1. **Local development** (no Docker):
+
    ```bash
    npm install
    npm run dev
    ```
 
 2. **Dockerized development**:
+
    ```bash
    npm run dev:docker
    # or
@@ -172,6 +189,7 @@ The `Dockerfile` creates optimized multi-stage builds:
 5. **production** - Optimized production image with health checks
 
 ## 📝 Notes
+
 - `.dockerignore` prevents `.env*` files from being copied into images
 - Environment variables are injected at runtime via Docker Compose
 - Supports both Neon serverless driver and standard Postgres connections
@@ -179,6 +197,7 @@ The `Dockerfile` creates optimized multi-stage builds:
 - Healthchecks included for container orchestration (Kubernetes, ECS, etc.)
 
 ## 🔗 Resources
+
 - [Neon Local Documentation](https://neon.com/docs/local/neon-local)
 - [Drizzle ORM Documentation](https://orm.drizzle.team/)
 - [Express.js Documentation](https://expressjs.com/)
