@@ -1,0 +1,67 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main, staging]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      NODE_OPTIONS: --experimental-vm-modules
+      CI: true
+      DATABASE_URL: ${{ secrets.TEST_DATABASE_URL || 'postgres://local:local@localhost:5432/neondb' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        id: tests
+        run: npm test -- --coverage
+        continue-on-error: true
+
+      - name: Upload coverage artifact
+        if: always() && hashFiles('coverage/**') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.tests.outcome }}" = "success" ]; then
+            echo "All tests passed ✅" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Tests failed ❌" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -f coverage/coverage-summary.json ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Coverage" >> $GITHUB_STEP_SUMMARY
+            node -e "const fs=require('fs');try{const t=JSON.parse(fs.readFileSync('coverage/coverage-summary.json','utf8')).total;console.log(`Lines: ${t.lines.pct}% | Statements: ${t.statements.pct}% | Functions: ${t.functions.pct}% | Branches: ${t.branches.pct}%`)}catch(e){process.exit(0)}" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Annotate failures
+        if: steps.tests.outcome == 'failure'
+        run: |
+          echo "::error title=Tests failed::See logs above. Re-run locally with 'NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npm test'."
+          exit 1
