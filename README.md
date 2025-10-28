@@ -62,7 +62,7 @@ docker compose -f docker-compose.dev.yml run --rm app npm run db:migrate
 3. Run migrations (optional):
    docker compose -f docker-compose.prod.yml run --rm app npm run db:migrate
 
-## Notes
+## Notes 
 
 - The Dockerfile builds two images: a dev image (hot reload via `npm run dev`) and a prod image (`node src/index.js`).
 - `.dockerignore` prevents `.env*` from being copied into images; envs are provided at runtime via Compose.
